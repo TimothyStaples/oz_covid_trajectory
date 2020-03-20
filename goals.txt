@@ -1,0 +1,19 @@
+PRIMARY GRAPH
+
+- Get axes (log y-axis)
+- Axis labels
+- Get line of actual data
+- Get multiple lines for states (diff colors/names)
+
+-----------------
+----------------
+
+
+- Get point on actual data for regression period
+- Get line to appear on hover
+- Get point and data line to highlight on hover
+- Get overlay with state, date and number of cases 
+
+SECONDARY GRAPH
+
+

@@ -1,0 +1,8 @@
+"count","date","Province.State","Country.Region","Lat","Long","oz.time","state.time"
+16,2020-03-13,"South Australia","Australia","-34.9285","138.6007",10,0
+19,2020-03-14,"South Australia","Australia","-34.9285","138.6007",11,1
+20,2020-03-15,"South Australia","Australia","-34.9285","138.6007",12,2
+29,2020-03-16,"South Australia","Australia","-34.9285","138.6007",13,3
+29,2020-03-17,"South Australia","Australia","-34.9285","138.6007",14,4
+37,2020-03-18,"South Australia","Australia","-34.9285","138.6007",15,5
+42,2020-03-19,"South Australia","Australia","-34.9285","138.6007",16,6
