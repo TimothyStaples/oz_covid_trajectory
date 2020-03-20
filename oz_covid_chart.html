@@ -1,0 +1,81 @@
+<!doctype html>
+<html>
+<head>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+</head>
+<style>
+
+/*Create some styles for our svg objects*/
+svg rect{fill: orange;}
+svg text{fill:black;
+         font: 12px sans-serif;
+         opacity: 1;
+       }
+
+</style>
+<body>
+
+<!---->
+
+<script>
+
+var width = 500;
+var height = 500;
+var margin = {bottom:40, left: 50, top:30, right:30};
+var yticks = [1,10,100,1000,10000];
+
+var stateCols = {ACT: #4d43c6, NSW: #cb2030,
+                 NT: #5b0016, QLD: #550f6f,
+                 SA: #e51e01, TAS: #233b25,
+                 VIC: #d34994, WA: #4b9532}
+
+// Set up log y d3.axis()
+var yaxisScale = d3.scaleLog()
+                  .domain([500,10])
+                  .range([0,height - margin.top - margin.bottom]);
+
+// X-axis scale is linear
+var xaxisScale = d3.scaleLinear()
+                  .domain([0,50])
+                  .range([0,width - margin.right - margin.left]);
+
+// Set up plot svg space
+var svgContainer = d3.select("body")
+                      .append("svg")
+                      .attr("width", width)
+                      .attr("height", height);
+
+// Create axes
+var yAxis = d3.axisLeft().scale(yaxisScale).ticks(100, ",.1s");
+var xAxis = d3.axisBottom().scale(xaxisScale);
+
+var yAxisGroup = svgContainer.append("g")
+                  .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+                    .call(yAxis);
+var xAxisGroup = svgContainer.append("g")
+                  .attr("transform", "translate(" + margin.left + "," + (height - margin.bottom) + ")")
+                  .call(xAxis);
+
+// Axis text labels
+svgContainer.append("text")
+            .attr("x", width/2)
+            .attr("y", height - margin.bottom + 35)
+            .style("text-anchor", "middle")
+            .text("Days since 10 confirmed cases");
+
+svgContainer.append("text")
+            .attr("transform", "rotate(-90)")
+            .attr("y", margin.left - 40)
+            .attr("x", -(height/2))
+            .style("text-anchor", "middle")
+            .text("Number of confirmed COVID-19 cases");
+
+// Example csv
+var NSW = 
+
+///////////////////////
+
+
+    </script>
+</body>
+</html>
