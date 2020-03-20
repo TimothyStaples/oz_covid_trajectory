@@ -84,5 +84,6 @@ print(x$Province.State[1])
     return(x)
 }))
 
+
 # write data file for commit to repo.
 write.table(oz.model, "./oz_model.csv", row.names=FALSE, sep=",")
