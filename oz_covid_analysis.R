@@ -1,6 +1,6 @@
 # Oz covid trajectories and comparisons ####
 
-setwd("/home/timothy/Dropbox/Tim/Personal/oz_covid_trajectory")
+setwd("/home/timothy/Dropbox/Tim/oz_covid_trajectory")
 
 # read in latest John Hopkins data
 covid <- read.csv("https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Confirmed.csv",
@@ -65,6 +65,7 @@ print(x$Province.State[1])
   x$slope = NA
   x$int[x$state.time >=7] = a[,1]
   x$slope[x$state.time >=7] = a[,2]
+  colnames(x) <- gsub(colnames(x), "//.", "")
   return(x)
 })
 
