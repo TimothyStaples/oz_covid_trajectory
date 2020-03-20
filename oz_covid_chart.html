@@ -18,7 +18,7 @@ svg text{fill:black;
 div.tooltip {
     position: absolute;
     text-align: left;
-    width: 130px;
+    width: 150px;
     height: 43px;
     padding: 4px;
     color: white;
@@ -36,14 +36,12 @@ div.tooltip {
 
 <div>
 <p style="font-size:24px"><font: sans-serif><b>Australian State COVID-19 trends</b></p>
-<p style="font-size:16px"><font: sans-serif>Hover over points to see estimated trajectory informed by the past seven days, projected out one week into the future.<br>
-States are only shown if they have recorded 10 confirmed cases, and trajectories are only modelled once
+<p style="font-size:16px"><font: sans-serif>Hover over points to see estimated trajectory informed by the past seven days, projected out one week into the future. States are only shown if they have recorded 10 confirmed cases, and trajectories are only modelled once
 there are seven days of post-10 case data.<br></p>
 <div class = "chart"></div>
-<p><font: 12px sans-serif>Data sourced from <a href="https://github.com/CSSEGISandData/COVID-19">John Hopkins University CCSE</a>.<br>
-Trajectory models are generated in R. All code is licensed under a <a href="https://mit-license.org/">MIT License</a>.
+<p><font: 12px sans-serif>Data sourced from <a href="https://github.com/CSSEGISandData/COVID-19">John Hopkins University CCSE</a>. Trajectory models are generated in R. All code is under an <a href="https://mit-license.org/">MIT License</a>.
 <br>
-To do list:
+<b>To do list:</b><br>
 Add example countries for comparison (e.g., Italy, Singapore, USA, UK)<br>
 Create second plot with trajectories over time
 </p>
@@ -192,15 +190,15 @@ if(pointSub.statetime >=7){
                       .style("opacity", 1);
 
                       //Tooltip
-                      div.transition()
-                         .duration(400)
-                          .style("background", stateCols[pointSub.state])
-                          .style("opacity", 0.8);
                       div.html(pointSub.state + ": " + pointSub.date + "<br>" +
                                "+" + " " + d3.format(".1%")(pointSub.incr) + " each day<br>" +
                                "Doubling every " + d3.format(".2")(pointSub.double) + " days")
-                        .style("left", (d3.event.pageX) + "px")
-                        .style("top", (d3.event.pageY - 28) + "px");
+                        .style("left", (d3.event.pageX) + 15 + "px")
+                        .style("top", (d3.event.pageY - 28) + "px")
+                        .style("background", stateCols[pointSub.state])
+                        div.transition().duration(400)
+                            .style("opacity", 0.8);
+
                     })
                     .on("mouseout", function(d,i){
                       d3.select(this).transition()

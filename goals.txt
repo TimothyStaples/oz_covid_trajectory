@@ -4,15 +4,16 @@ PRIMARY GRAPH
 - Axis labels
 - Get line of actual data
 - Get multiple lines for states (diff colors/names)
-
------------------
-----------------
-
-
 - Get point on actual data for regression period
 - Get line to appear on hover
 - Get point and data line to highlight on hover
 - Get overlay with state, date and number of cases 
+
+-----------------
+----------------
+
+- Set hover text to be slightly away from hover point
+- Firefox is clipping text, make it wider.
 
 SECONDARY GRAPH
 

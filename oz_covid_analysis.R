@@ -80,10 +80,10 @@ print(x$Province.State[1])
   x$min = exp(x$int + x$slope*(x$statetime-7))
   x$max = exp(x$int + x$slope*(x$statetime+7))
   x$incr = exp(x$slope)-1
-  x$double = 1/x$incr
+  x$double = ifelse(x$slope != 0, log(2) / x$slope, 0)
     return(x)
 }))
 
-
 # write data file for commit to repo.
+
 write.table(oz.model, "./oz_model.csv", row.names=FALSE, sep=",")
