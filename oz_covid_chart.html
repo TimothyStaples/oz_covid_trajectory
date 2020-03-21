@@ -59,7 +59,9 @@ var stateCols = {ACT: "#4d43c6", NSW: "#cb2030",
 
 var labeloffset = {x: width*0.01, y: height*0.01};
 
-var horizlines = [1,10,50,100,500,1000,5000];
+var horizlines = [1,10,20,30,40,50,60,70,80,90,100,
+                  200,300,400,500,600,700,800,900,1000,
+                  2000,3000,4000,5000];
 
 // Set up log y d3.axis()
 var yaxisScale = d3.scaleLog()
@@ -97,7 +99,8 @@ svgContainer.append("line")
             .attr("x2", width-margin.right)
             .attr("y1", yaxisoffset(d))
             .attr("y2", yaxisoffset(d))
-            .attr("stroke", "#DCDCDC");
+            .attr("stroke", "#DCDCDC")
+            .attr("stroke-width", 0.75);
           });
 
 // Axis text labels
@@ -189,7 +192,7 @@ if(pointSub.statetime >=7){
                       .style("opacity", 1);
 
                       //Tooltip
-                      div.html(pointSub.state + ": " + pointSub.date + "<br>" +
+                      div.html(pointSub.state + ": " + pointSub.date + " : " + pointSub.count + "<br>" +
                                "+" + " " + d3.format(".1%")(pointSub.incr) + " each day<br>" +
                                "Doubling every " + d3.format(".2")(pointSub.double) + " days")
                         .style("left", (d3.event.pageX) + 15 + "px")

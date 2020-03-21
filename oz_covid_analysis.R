@@ -1,4 +1,5 @@
 # Oz covid trajectories and comparisons ####
+
 setwd("/home/timothy/Dropbox/Tim/data/oz_covid_trajectory")# local github repo location
 
 # read in latest John Hopkins data
@@ -12,6 +13,17 @@ oz_cov <- covid[covid$Country.Region=="Australia" &
 # Comparison countries - TO BE DONE STILL
 comp_cov <- covid[covid$Country.Region %in% c("Singapore", "Hong Kong", "United Kingdom",
                                               "Italy", "US", "Korea, South"),]
+
+# collapse locality data from other countries to country-level totals
+comp_cov <- do.call("rbind", lapply(split(comp_cov, f=comp_cov$Country.Region), function(x){
+  if(nrow(x)==1){return(x)}
+  date.cols <- grepl("X", colnames(x))
+  return(cbind(x[1,!date.cols], t(colSums(x[,date.cols]))))
+  }))
+
+comp_cov$Province.State = comp_cov$Country.Region
+
+oz_cov <- rbind(oz_cov, comp_cov)
 
 # long-form data function
 long.form <- function(wide.cols, retain.cols){
@@ -29,9 +41,6 @@ oz_long <- long.form(oz_cov[,grepl("X", colnames(oz_cov))],
                         oz_cov[,!grepl("X", colnames(oz_cov))])
 oz_long$date <- as.Date(substr(rownames(oz_long), 2, nchar(rownames(oz_long))-1),
                         format="%m.%d.%y")
-acs <- c("ACT", "NSW", "NT", "QLD", "SA", "TAS", "VIC", "WA")
-oz_long$state <- acs[as.numeric(factor(oz_long$Province.State,
-                                        levels=sort(unique(oz_long$Province.State))))]
 
 # first state > 10 cases as threshold per state
 first.oz <- oz_long$date[which(oz_long$count > 10)[1]]
@@ -45,6 +54,10 @@ oz_long$date <- as.character(oz_long$date)
 oz_long$date<-paste0(substr(oz_long$date,nchar(oz_long$date)-1,nchar(oz_long$date)),
                      "/",
                      substr(oz_long$date,nchar(oz_long$date)-4,nchar(oz_long$date)-3))
+
+## MANUAL CORRECTION FOR OUT OF DATE VICTORIAN DATA ####
+oz_long$count[oz_long$Province.State=="Victoria" &
+              oz_long$date %in% c("19/03", "20/03")] = c(150, 178)
 
 # now model coefficients for every date we have > 7 data points for, for each state
 oz.model <- do.call("rbind", lapply(split(oz_long, f=oz_long$Province.State), function(x){
@@ -85,5 +98,12 @@ print(x$Province.State[1])
 }))
 
 # write data file for commit to repo.
+comp.model <- droplevels(oz.model[oz.model$CountryRegion!="Australia",])
+oz.model <- droplevels(oz.model[oz.model$CountryRegion=="Australia",])
+
+acs <- c("ACT", "NSW", "NT", "QLD", "SA", "TAS", "VIC", "WA")
+oz.model$state <- acs[as.numeric(factor(oz.model$ProvinceState,
+                                       levels=sort(unique(oz_cov$Province.State[oz_cov$Country.Region=="Australia"]))))]
 
 write.table(oz.model, "./oz_model.csv", row.names=FALSE, sep=",")
+write.table(comp.model[comp.model$statetime==max(oz.model$statetime),], "./comp_models.csv", row.names=FALSE, sep=",")
