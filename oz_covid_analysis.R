@@ -1,5 +1,5 @@
 # Oz covid trajectories and comparisons ####
-setwd("/home/timothy/Dropbox/Tim/oz_covid_trajectory")# local github repo location
+setwd("/home/timothy/Dropbox/Tim/data/oz_covid_trajectory")# local github repo location
 
 # read in latest John Hopkins data
 covid <- read.csv("https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Confirmed.csv",
