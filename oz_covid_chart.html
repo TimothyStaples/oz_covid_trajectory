@@ -193,7 +193,7 @@ if(pointSub.statetime >=7){
                       .style("opacity", 1);
 
                       //Tooltip
-                      div.html(pointSub.state + ": " + pointSub.date + " : " + pointSub.count + "<br>" +
+                      div.html(pointSub.state + ": " + pointSub.date + " : " + pointSub.count + " cases<br>" +
                                "+" + " " + d3.format(".1%")(pointSub.incr) + " each day<br>" +
                                "Doubling every " + d3.format(".2")(pointSub.double) + " days")
                         .style("left", (d3.event.pageX) + 15 + "px")
