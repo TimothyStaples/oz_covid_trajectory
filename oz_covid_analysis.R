@@ -10,7 +10,8 @@ covid <- read.csv("https://raw.githubusercontent.com/CSSEGISandData/COVID-19/mas
 oz_cov <- covid[covid$Country.Region=="Australia" &
                   covid$Province.State != "From Diamond Princess",]
 
-# Comparison countries - TO BE DONE STILL
+# Comparison countries
+covid$Country.Region[covid$Province.State=="Hong Kong"] = "Hong Kong"
 comp_cov <- covid[covid$Country.Region %in% c("Singapore", "Hong Kong", "United Kingdom",
                                               "Italy", "US", "Korea, South"),]
 
@@ -105,5 +106,32 @@ acs <- c("ACT", "NSW", "NT", "QLD", "SA", "TAS", "VIC", "WA")
 oz.model$state <- acs[as.numeric(factor(oz.model$ProvinceState,
                                        levels=sort(unique(oz_cov$Province.State[oz_cov$Country.Region=="Australia"]))))]
 
+comp.acs <- c("Hong Kong", "Italy", "Sth Korea", "Singapore", "UK", "USA")
+comp.model$state <- comp.acs[as.numeric(factor(comp.model$ProvinceState,
+                                        levels=sort(unique(comp.model$ProvinceState))))]
+
+  
+
+# for the comparison countries, we want to extract trajectories when they had similar case
+# loads to us, as their testing when cases were rare are pretty unreliable.
+
+# Aus max case at current time
+oz.max <- max(sapply(split(oz.model, f=oz.model$ProvinceState), function(x){return(rev(x$count)[1])}))
+
+comp.model <- do.call("rbind", lapply(split(comp.model, f= comp.model$ProvinceState),
+                      function(x){
+                     
+                    x.case.match <- which.min(abs(x$count - oz.max))
+                    
+                    # time conversion
+                    x$oztimemax <- max(oz.model$statetime)
+                    x$oztime = x$statetime + (max(oz.model$statetime) - x$statetime[x.case.match])
+                    return(x)    
+                      }))
+
 write.table(oz.model, "./oz_model.csv", row.names=FALSE, sep=",")
-write.table(comp.model[comp.model$statetime==max(oz.model$statetime),], "./comp_models.csv", row.names=FALSE, sep=",")
+write.table(oz.model[oz.model$incr >0,], "./oz_slope.csv", row.names=FALSE, sep=",")
+write.table(comp.model[comp.model$oztime>=0 &
+                       comp.model$oztime < max(oz.model$statetime)+7,], "./comp_models.csv", row.names=FALSE, sep=",")
+write.table(comp.model[comp.model$oztime>= min(oz.model$statetime[oz.model$incr>0]) &
+                       comp.model$oztime < max(oz.model$statetime)+7,], "./comp_slope.csv", row.names=FALSE, sep=",")

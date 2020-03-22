@@ -34,7 +34,7 @@ div.tooltip {
 
 <!---->
 <div>
-<p style="font-size:24px"><font: sans-serif><b>Australian State COVID-19 trends</b> (<a href="https://timothystaples.github.io/oz_covid_trajectory/oz_covid_chart_m.html">Mobile version</a>)<div class = "chart"></div></p>
+<p style="font-size:24px"><font: sans-serif><b>Australian State COVID-19 trends</b> (<a href="https://timothystaples.github.io/oz_covid_trajectory/oz_covid_chart.html">Desktop verion</a>)<div class = "chart"></div></p>
 <div style="width:1000px;"><p style="font-size:14px"><font: sans-serif><b>Left panel:</b> Y-axis scores are total confirmed cases by date, based on the first date each state recorded 10 confirmed cases. Hover over points to see an estimated trajectory for the next week, based on the average increase over the past week, as well as daily percentage increase and time for cases to double. These are NOT epidemiology models, they are simple projections based on past trends. Comparison countries are recorded in grey. Their x-axis scores are based on when they had similar cases to the maximum state observation (i.e. NSW). I judged this was the most appropriate comparison, given differences in testing protocols. It shows potential future scenarios for states on a similar trajectory, up to one week from current state case numbers.</p>
 <p  style="font-size:14px"><b>Right panel:</b> Y-axis on this panel are the daily increases based on a running 7-day trend. These are equivalent to the slopes of the trajectories shown when hovering over left panel points, minus one. Positive percentages indicate cases are growing, with a zero indicating stable case numbers. Comparison trends are shown for other countries, however, their week-based trajectories are far less stable than Australian states due to changes in diagnosis and testing protocols.</p>
 </p><p  style="font-size:14px"><font: 12px sans-serif>Data sourced from <a href="https://github.com/CSSEGISandData/COVID-19">John Hopkins University CCSE</a>. Trajectory models are generated in R. All code is under an <a href="https://mit-license.org/">MIT License</a>. Code is poorly formatted and scarily inefficient - use at your own risk!</div>
@@ -48,6 +48,7 @@ var rightWidth = 450;
 var height = 500;
 var margin = {bottom:50, left: 50, top:5, right:60};
 var yticks = [1,10,100,1000,10000];
+var mobileBuffer = 8;
 
 var stateCols = {ACT: "#4d43c6", NSW: "#cb2030",
                  NT: "#5b0016", QLD: "#550f6f",
@@ -169,35 +170,44 @@ stateVals = dataSub.values;
 stateVals.forEach(function(pointSub, i){
 
 if(pointSub.oztime >= d3.max(stateVals, function(d) { return d.oztime; })){
+
   svgContainer.append("circle") // Uses the enter().append() method
                     //.attr("class", "dot") // Assign a class for styling
                     .attr("cx", xaxisoffset(pointSub.oztime))
                     .attr("cy", yaxisoffset(pointSub.count))
                     .attr("r",4)
                     .attr("class", "compPoints")
-                    .attr("name", stateName + "Point")
+                    .attr("name", stateName + pointSub.oztime + "Point")
                     .style("fill", compColor)
                     .style("opacity", 1)
                     .style("stroke", "transparent")
                     .style("width",0);
 
-                    .attr("cx", xaxisoffset(pointSub.oztime))
-                    .attr("cy", yaxisoffset(pointSub.count))
-                    .attr("r",4)
-                    .attr("class", "compPoints")
-                    .attr("name", stateName + "Point")
-                    .style("fill", compColor)
-                    .style("opacity", 1)
-                    .style("stroke", "transparent")
-                    .style("width",0);
-                    .on("mouseover", function(d,i){
+//Invisible point with larger radius to act as buffer for imprecise tapping
+//mobile devices
+                      svgContainer.append("circle") // Uses the enter().append() method
+                                        //.attr("class", "dot") // Assign a class for styling
+                                        .attr("cx", xaxisoffset(pointSub.oztime))
+                                        .attr("cy", yaxisoffset(pointSub.count))
+                                        .attr("r",mobileBuffer)
+                                        .attr("class", "compPoints")
+                                        .attr("name", stateName + "Point")
+                                        .style("fill", compColor)
+                                        .style("opacity", 0)
+                                        .style("stroke", "transparent")
+                                        .style("width",0)
+                                        .on("mouseover", function(d,i){
 
                       //Increase point size
-                      d3.select(this).transition()
+                      d3.select("#" +  stateName + pointSub.oztime + "Point").transition()
                       .duration("200")
                       .attr("r",7)
 
-            
+                      svgContainer.selectAll('circle.prospect').on("mouseover", function(d) {
+                          var circleUnderMouse = this;
+                          d3.selectAll('circle.prospect').transition()
+                      });
+
                       //Make other points more opaque
                       d3.selectAll(".casePoints")
                           .transition()
@@ -310,15 +320,26 @@ if(pointSub.statetime >=7){
                     .attr("cy", yaxisoffset(pointSub.count))
                     .attr("r", 4)
                     .attr("class", "casePoints")
-                    .attr("name", stateName + "Point")
+                    .attr("name", stateName + pointSub.statetime + "Point")
                     .style("fill", stateCols[stateName])
                     .style("opacity", 1)
                     .style("stroke", "transparent")
-                    .style("width",0)
+                    .style("width",0);
+
+                    svgContainer.append("circle") // Uses the enter().append() method
+                                  //.attr("class", "dot") // Assign a class for styling
+                                  .attr("cx", xaxisoffset(pointSub.statetime))
+                                  .attr("cy", yaxisoffset(pointSub.count))
+                                  .attr("r", mobileBuffer)
+                                  .attr("name", stateName + "Point")
+                                  .style("fill", stateCols[stateName])
+                                  .style("opacity", 0)
+                                  .style("stroke", "transparent")
+                                  .style("width",0)
                     .on("mouseover", function(d,i){
 
                       //Increase point size
-                      d3.select(this).transition()
+                      d3.select("#" + stateName + pointSub.statetime + "Point").transition()
                       .duration("200")
                       .attr("r",7)
 
@@ -517,14 +538,25 @@ if(pointSub.oztime >= d3.max(stateVals, function(d) { return d.oztime;})){
                     .attr("cx", slopexaxisoffset(pointSub.oztime))
                     .attr("cy", slopeyaxisoffset(pointSub.incr))
                     .attr("r", 4)
+                    .attr("name", stateName + pointSub.oztime + "compslope")
                     .style("fill", compColor)
                     .style("opacity", 1)
                     .style("stroke", "transparent")
-                    .style("width",0)
+                    .style("width",0);
+
+                    svgContainer.append("circle") // Uses the enter().append() method
+                                  //.attr("class", "dot") // Assign a class for styling
+                                  .attr("cx", slopexaxisoffset(pointSub.oztime))
+                                  .attr("cy", slopeyaxisoffset(pointSub.incr))
+                                  .attr("r", mobileBuffer)
+                                  .style("fill", compColor)
+                                  .style("opacity", 0)
+                                  .style("stroke", "transparent")
+                                  .style("width",0)
                     .on("mouseover", function(d,i){
 
                       //Increase point size
-                      d3.select(this).transition()
+                      d3.select("#" + stateName + pointSub.oztime + "compslope").transition()
                       .duration("200")
                       .attr("r",7)
                                           //Tooltip
@@ -599,14 +631,25 @@ if(pointSub.statetime >=7){
                     .attr("cx", slopexaxisoffset(pointSub.statetime))
                     .attr("cy", slopeyaxisoffset(pointSub.incr))
                     .attr("r", 4)
+                    .attr("name", stateName + pointSub.statetime + "slopePoint")
                     .style("fill", stateCols[stateName])
                     .style("opacity", 1)
                     .style("stroke", "transparent")
-                    .style("width",0)
+                    .style("width",0);
+
+                    svgContainer.append("circle") // Uses the enter().append() method
+                                  //.attr("class", "dot") // Assign a class for styling
+                                  .attr("cx", slopexaxisoffset(pointSub.statetime))
+                                  .attr("cy", slopeyaxisoffset(pointSub.incr))
+                                  .attr("r", mobileBuffer)
+                                  .style("fill", stateCols[stateName])
+                                  .style("opacity", 0)
+                                  .style("stroke", "transparent")
+                                  .style("width",0)
                     .on("mouseover", function(d,i){
 
                       //Increase point size
-                      d3.select(this).transition()
+                      d3.select("#" + stateName + pointSub.statetime + "slopePoint").transition()
                       .duration("200")
                       .attr("r",7)
 
