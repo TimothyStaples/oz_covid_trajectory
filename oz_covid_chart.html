@@ -179,17 +179,7 @@ if(pointSub.oztime >= d3.max(stateVals, function(d) { return d.oztime; })){
                     .style("fill", compColor)
                     .style("opacity", 1)
                     .style("stroke", "transparent")
-                    .style("width",0);
-
-                    .attr("cx", xaxisoffset(pointSub.oztime))
-                    .attr("cy", yaxisoffset(pointSub.count))
-                    .attr("r",4)
-                    .attr("class", "compPoints")
-                    .attr("name", stateName + "Point")
-                    .style("fill", compColor)
-                    .style("opacity", 1)
-                    .style("stroke", "transparent")
-                    .style("width",0);
+                    .style("width",0)
                     .on("mouseover", function(d,i){
 
                       //Increase point size
@@ -197,7 +187,7 @@ if(pointSub.oztime >= d3.max(stateVals, function(d) { return d.oztime; })){
                       .duration("200")
                       .attr("r",7)
 
-            
+
                       //Make other points more opaque
                       d3.selectAll(".casePoints")
                           .transition()
