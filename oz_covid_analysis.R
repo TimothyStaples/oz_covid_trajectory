@@ -137,6 +137,6 @@ comp.model <- do.call("rbind", lapply(split(comp.model, f= comp.model$ProvinceSt
 write.table(oz.model, "./oz_model.csv", row.names=FALSE, sep=",")
 write.table(oz.model[oz.model$incr >0,], "./oz_slope.csv", row.names=FALSE, sep=",")
 write.table(comp.model[comp.model$oztime>=0 &
-                       comp.model$oztime < max(oz.model$statetime)+7,], "./comp_models.csv", row.names=FALSE, sep=",")
+                         comp.model$oztime < comp.model$oztimemax,], "./comp_models.csv", row.names=FALSE, sep=",")
 write.table(comp.model[comp.model$oztime>= min(oz.model$statetime[oz.model$incr>0]) &
-                       comp.model$oztime < max(oz.model$statetime)+7,], "./comp_slope.csv", row.names=FALSE, sep=",")
+                       comp.model$oztime < comp.model$oztimemax,], "./comp_slope.csv", row.names=FALSE, sep=",")
