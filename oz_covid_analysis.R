@@ -60,6 +60,11 @@ oz_long$date<-paste0(substr(oz_long$date,nchar(oz_long$date)-1,nchar(oz_long$dat
 oz_long$count[oz_long$Province.State=="Victoria" &
               oz_long$date %in% c("19/03", "20/03")] = c(150, 178)
 
+## ALSO QUEENSLAND DATA FOR 23/03 ####
+oz_long$count[oz_long$Province.State=="Queensland" &
+                oz_long$date %in% c("22/03")] = 259
+
+
 # now model coefficients for every date we have > 7 data points for, for each state
 oz.model <- do.call("rbind", lapply(split(oz_long, f=oz_long$Province.State), function(x){
 print(x$Province.State[1])
