@@ -35,7 +35,7 @@ div.tooltip {
 <!---->
 <div>
 <p style="font-size:24px"><font: sans-serif><b>Australian State COVID-19 trends</b> (<a href="https://timothystaples.github.io/oz_covid_trajectory/oz_covid_chart_m.html">Mobile version</a>)<div class = "chart"></div></p>
-<div style="width:1000px;"><p style="font-size:14px"><font: sans-serif><b>Left panel:</b> Y-axis scores are total confirmed cases by date, based on the first date each state recorded 10 confirmed cases. Hover over points to see an estimated trajectory for the next week, based on the average increase over the past week, as well as daily percentage increase and time for cases to double. These are NOT epidemiology models, they are simple projections based on past trends. Comparison countries are recorded in grey. Their x-axis scores are based on when they had similar cases to the maximum state observation (i.e. NSW). I judged this was the most appropriate comparison, given differences in testing protocols. It shows potential future scenarios for states on a similar trajectory, up to one week from current state case numbers.</p>
+<div style="width:1000px;"><p style="font-size:14px"><font: sans-serif><b>Left panel:</b> Y-axis scores are total confirmed cases by date, based on the first date each state recorded 10 confirmed cases. Hover over points to see an estimated trajectory for the next week, based on the average increase over the past week, as well as daily percentage increase and time for cases to double. These are NOT epidemiology models, they are simple projections based on past trends. Comparison countries are recorded in grey. Their x-axis scores are based on when they had similar cases to the maximum state observation (i.e. NSW). I judged this was the most appropriate comparison, given differences in testing protocols.</p>
 <p  style="font-size:14px"><b>Right panel:</b> Y-axis on this panel are the daily increases based on a running 7-day trend. These are equivalent to the slopes of the trajectories shown when hovering over left panel points, minus one. Positive percentages indicate cases are growing, with a zero indicating stable case numbers. Comparison trends are shown for other countries, however, their week-based trajectories are far less stable than Australian states due to changes in diagnosis and testing protocols.</p>
 </p><p  style="font-size:14px"><font: 12px sans-serif>Data sourced from <a href="https://github.com/CSSEGISandData/COVID-19">John Hopkins University CCSE</a>. Trajectory models are generated in R. All code is under an <a href="https://mit-license.org/">MIT License</a>. Code is poorly formatted and scarily inefficient - use at your own risk!<br><br>
 <b>To Do:</b> John Hopkins is becoming unreliable and needing manual data corrections. Convert to https://github.com/infotorch/covid19-australia-api.</p>
@@ -65,7 +65,7 @@ var horizlines = [1,10,20,30,40,50,60,70,80,90,100,
 
 // Set up log y d3.axis()
 var yaxisScale = d3.scaleLog()
-                  .domain([4000,10])
+                  .domain([2000,10])
                   .range([margin.top, height - margin.bottom]);
 
 // X-axis scale is linear
@@ -170,8 +170,9 @@ stateVals = dataSub.values;
 
 stateVals.forEach(function(pointSub, i){
 
-if(pointSub.oztime >= d3.max(stateVals, function(d) { return d.oztime; })){
-  svgContainer.append("circle") // Uses the enter().append() method
+
+if(pointSub.oztime == d3.max(stateVals, function(d) { return d.oztimemax; })){
+      svgContainer.append("circle") // Uses the enter().append() method
                     //.attr("class", "dot") // Assign a class for styling
                     .attr("cx", xaxisoffset(pointSub.oztime))
                     .attr("cy", yaxisoffset(pointSub.count))
@@ -412,7 +413,7 @@ var slopeyaxisScale = d3.scaleLinear()
 
 // X-axis scale is linear
 var slopexaxisScale = d3.scaleLinear()
-                  .domain([6,28])
+                  .domain([6,24])
                   .range([leftWidth - margin.left + margin.right, leftWidth+rightWidth]);
 
 var slopexaxisoffset = function(d){return slopexaxisScale(d) + margin.right;};
@@ -503,7 +504,7 @@ svgContainer.append("path")
 
 stateVals.forEach(function(pointSub, i){
 
-if(pointSub.oztime >= d3.max(stateVals, function(d) { return d.oztime;})){
+    if(pointSub.oztime == d3.max(stateVals, function(d) { return d.oztimemax; })){
       svgContainer.append("circle") // Uses the enter().append() method
                     //.attr("class", "dot") // Assign a class for styling
                     .attr("cx", slopexaxisoffset(pointSub.oztime))

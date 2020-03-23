@@ -124,19 +124,19 @@ comp.model$state <- comp.acs[as.numeric(factor(comp.model$ProvinceState,
 oz.max <- max(sapply(split(oz.model, f=oz.model$ProvinceState), function(x){return(rev(x$count)[1])}))
 
 comp.model <- do.call("rbind", lapply(split(comp.model, f= comp.model$ProvinceState),
-                      function(x){
+                     function(x){
                      
-                    x.case.match <- which.min(abs(x$count - oz.max))
+                      x.case.match <- which.min(abs(x$count - oz.max))
                     
-                    # time conversion
-                    x$oztimemax <- max(oz.model$statetime)
-                    x$oztime = x$statetime + (max(oz.model$statetime) - x$statetime[x.case.match])
-                    return(x)    
+                      # time conversion
+                      x$oztimemax <- max(oz.model$statetime)
+                      x$oztime = x$statetime + (max(oz.model$statetime) - x$statetime[x.case.match])
+                      return(x)    
                       }))
 
 write.table(oz.model, "./oz_model.csv", row.names=FALSE, sep=",")
 write.table(oz.model[oz.model$incr >0,], "./oz_slope.csv", row.names=FALSE, sep=",")
 write.table(comp.model[comp.model$oztime>=0 &
-                         comp.model$oztime < comp.model$oztimemax,], "./comp_models.csv", row.names=FALSE, sep=",")
+                      comp.model$oztime <= comp.model$oztimemax,], "./comp_models1.csv", row.names=FALSE, sep=",")
 write.table(comp.model[comp.model$oztime>= min(oz.model$statetime[oz.model$incr>0]) &
-                       comp.model$oztime < comp.model$oztimemax,], "./comp_slope.csv", row.names=FALSE, sep=",")
+                       comp.model$oztime <= comp.model$oztimemax,], "./comp_slope1.csv", row.names=FALSE, sep=",")
