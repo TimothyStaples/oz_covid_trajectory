@@ -56,14 +56,31 @@ oz_long$date<-paste0(substr(oz_long$date,nchar(oz_long$date)-1,nchar(oz_long$dat
                      "/",
                      substr(oz_long$date,nchar(oz_long$date)-4,nchar(oz_long$date)-3))
 
-## MANUAL CORRECTION FOR OUT OF DATE VICTORIAN DATA ####
+## MANUAL DATA CORRECTIONS ####
+
+#John Hopkins is not updating new state cases well. I need to switch to an alternate
+# data source, but for now I'll update manually.
+
 oz_long$count[oz_long$Province.State=="Victoria" &
-              oz_long$date %in% c("19/03", "20/03")] = c(150, 178)
+              oz_long$date %in% c("19/03", "20/03", "23/03")] = c(150, 178, 355)
 
-## ALSO QUEENSLAND DATA FOR 23/03 ####
 oz_long$count[oz_long$Province.State=="Queensland" &
-                oz_long$date %in% c("22/03")] = 259
+                oz_long$date %in% c("22/03", "23/03")] = c(259, 319)
 
+oz_long$count[oz_long$Province.State=="New South Wales" &
+                oz_long$date %in% c("23/03")] = c(669)
+
+oz_long$count[oz_long$Province.State=="Tasmania" &
+                oz_long$date %in% c("23/03")] = c(28)
+
+oz_long$count[oz_long$Province.State=="Western Australia" &
+                oz_long$date %in% c("23/03")] = c(140)
+
+oz_long$count[oz_long$Province.State=="South Australia" &
+                oz_long$date %in% c("23/03")] = c(134)
+
+oz_long$count[oz_long$Province.State=="Australian Captial Territory" &
+                oz_long$date %in% c("23/03")] = c(32)
 
 # now model coefficients for every date we have > 7 data points for, for each state
 oz.model <- do.call("rbind", lapply(split(oz_long, f=oz_long$Province.State), function(x){
@@ -137,6 +154,6 @@ comp.model <- do.call("rbind", lapply(split(comp.model, f= comp.model$ProvinceSt
 write.table(oz.model, "./oz_model.csv", row.names=FALSE, sep=",")
 write.table(oz.model[oz.model$incr >0,], "./oz_slope.csv", row.names=FALSE, sep=",")
 write.table(comp.model[comp.model$oztime>=0 &
-                      comp.model$oztime <= comp.model$oztimemax,], "./comp_models1.csv", row.names=FALSE, sep=",")
+                      comp.model$oztime <= comp.model$oztimemax,], "./comp_models.csv", row.names=FALSE, sep=",")
 write.table(comp.model[comp.model$oztime>= min(oz.model$statetime[oz.model$incr>0]) &
-                       comp.model$oztime <= comp.model$oztimemax,], "./comp_slope1.csv", row.names=FALSE, sep=",")
+                       comp.model$oztime <= comp.model$oztimemax,], "./comp_slope.csv", row.names=FALSE, sep=",")
