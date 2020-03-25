@@ -3,7 +3,7 @@
 setwd("/home/timothy/Dropbox/Tim/data/oz_covid_trajectory")# local github repo location
 
 # read in latest John Hopkins data
-covid <- read.csv("https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Confirmed.csv",
+covid <- read.csv("https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv",
                   stringsAsFactors = FALSE)
 
 # Australian data, excluding cruise ship
@@ -62,25 +62,13 @@ oz_long$date<-paste0(substr(oz_long$date,nchar(oz_long$date)-1,nchar(oz_long$dat
 # data source, but for now I'll update manually.
 
 oz_long$count[oz_long$Province.State=="Victoria" &
-              oz_long$date %in% c("19/03", "20/03", "23/03")] = c(150, 178, 355)
-
-oz_long$count[oz_long$Province.State=="Queensland" &
-                oz_long$date %in% c("22/03", "23/03")] = c(259, 319)
-
+              oz_long$date %in% c("19/03", "20/03", "22/03", "23/03")] = c(150, 178, 296, 355)
+ 
 oz_long$count[oz_long$Province.State=="New South Wales" &
-                oz_long$date %in% c("23/03")] = c(669)
-
+               oz_long$date %in% c("22/03")] = c(533)
+ 
 oz_long$count[oz_long$Province.State=="Tasmania" &
-                oz_long$date %in% c("23/03")] = c(28)
-
-oz_long$count[oz_long$Province.State=="Western Australia" &
-                oz_long$date %in% c("23/03")] = c(140)
-
-oz_long$count[oz_long$Province.State=="South Australia" &
-                oz_long$date %in% c("23/03")] = c(134)
-
-oz_long$count[oz_long$Province.State=="Australian Captial Territory" &
-                oz_long$date %in% c("23/03")] = c(32)
+               oz_long$date %in% c("24/03")] = c(36)
 
 # now model coefficients for every date we have > 7 data points for, for each state
 oz.model <- do.call("rbind", lapply(split(oz_long, f=oz_long$Province.State), function(x){
