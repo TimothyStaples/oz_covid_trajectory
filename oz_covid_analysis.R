@@ -68,7 +68,16 @@ oz_long$count[oz_long$Province.State=="New South Wales" &
                oz_long$date %in% c("22/03")] = c(533)
  
 oz_long$count[oz_long$Province.State=="Tasmania" &
-               oz_long$date %in% c("24/03")] = c(36)
+               oz_long$date %in% c("24/03", "25/03")] = c(36,42)
+
+oz_long$count[oz_long$Province.State=="South Australia" &
+                oz_long$date %in% c("25/03")] = c(197)
+
+oz_long$count[oz_long$Province.State=="Western Australia" &
+                oz_long$date %in% c("25/03")] = c(205)
+
+oz_long$count[oz_long$Province.State=="Australian Captial Territory" &
+                oz_long$date %in% c("25/03")] = c(44)
 
 # now model coefficients for every date we have > 7 data points for, for each state
 oz.model <- do.call("rbind", lapply(split(oz_long, f=oz_long$Province.State), function(x){
