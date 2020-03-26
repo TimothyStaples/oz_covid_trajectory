@@ -96,6 +96,15 @@ var xAxisGroup = svgContainer.append("g")
                   .attr("transform", "translate(" + margin.left + "," + (height + margin.top - margin.bottom) + ")")
                   .call(xAxis);
 
+svgContainer.append("rect")
+            .attr("x", margin.left)
+            .attr("y", margin.top)
+            .attr("width", leftWidth - margin.left)
+            .attr("height", height - margin.bottom)
+            .style("stroke", "transparent")
+            .style("stroke-width", 0)
+            .style("fill","white");
+
 horizlines.forEach(function(d){
 svgContainer.append("line")
             .attr("x1", margin.left)
@@ -436,6 +445,15 @@ var xAxisGroup = svgContainer.append("g")
 
 var slopelines = [-0.05, 0.05, 0.1,0.15,0.2,0.25,0.3,0.35,0.4,
                   0.45,0.5,0.55];
+
+svgContainer.append("rect")
+            .attr("x", leftWidth + margin.right)
+            .attr("y", margin.top)
+            .attr("width", rightWidth)
+            .attr("height", height - margin.bottom)
+            .style("stroke", "transparent")
+            .style("stroke-width", 0)
+            .style("fill","white");
 
 slopelines.forEach(function(d){
             svgContainer.append("line")
