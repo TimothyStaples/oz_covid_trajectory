@@ -6,6 +6,10 @@ setwd("/home/timothy/Dropbox/Tim/data/oz_covid_trajectory")# local github repo l
 covid <- read.csv("https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv",
                   stringsAsFactors = FALSE)
 
+# Make New-zealand part of Australia to make modelling easier
+covid$Province.State[covid$Country.Region=="New Zealand"] = "New Zealand"
+covid$Country.Region[covid$Country.Region=="New Zealand"] = "Australia"
+
 # Australian data, excluding cruise ship
 oz_cov <- covid[covid$Country.Region=="Australia" &
                   covid$Province.State != "From Diamond Princess",]
@@ -121,7 +125,7 @@ print(x$Province.State[1])
 comp.model <- droplevels(oz.model[oz.model$CountryRegion!="Australia",])
 oz.model <- droplevels(oz.model[oz.model$CountryRegion=="Australia",])
 
-acs <- c("ACT", "NSW", "NT", "QLD", "SA", "TAS", "VIC", "WA")
+acs <- c("ACT", "NSW", "NZ", "NT", "QLD", "SA", "TAS", "VIC", "WA")
 oz.model$state <- acs[as.numeric(factor(oz.model$ProvinceState,
                                        levels=sort(unique(oz_cov$Province.State[oz_cov$Country.Region=="Australia"]))))]
 

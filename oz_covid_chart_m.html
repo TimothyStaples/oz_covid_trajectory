@@ -52,7 +52,7 @@ var margin = {bottom:50, left: 50, top:5, right:60};
 var yticks = [1,10,100,1000,10000];
 var mobileBuffer = 16;
 
-var stateCols = {ACT: "#4d43c6", NSW: "#cb2030",
+var stateCols = {ACT: "#4d43c6", NSW: "#cb2030", NZ: "#708b84",
                  NT: "#5b0016", QLD: "#550f6f",
                  SA: "#1f0101", TAS: "#233b25",
                  VIC: "#d34994", WA: "#4b9532"}
@@ -445,9 +445,9 @@ var slopeyaxisScale = d3.scaleLinear()
 // X-axis scale is linear
 var slopexaxisScale = d3.scaleLinear()
                   .domain([6,28])
-                  .range([leftWidth - margin.left + margin.right, leftWidth+rightWidth]);
+                  .range([leftWidth + margin.right, leftWidth+rightWidth+margin.right]);
 
-var slopexaxisoffset = function(d){return slopexaxisScale(d) + margin.right;};
+var slopexaxisoffset = function(d){return slopexaxisScale(d);};
 var slopeyaxisoffset = function(d){return slopeyaxisScale(d) + margin.top;};
 
 var slopelabeloffset = {x: 0.35, y: -0.005};
@@ -460,7 +460,7 @@ var yAxisGroup = svgContainer.append("g")
                   .attr("transform", "translate(" + 560 + "," + margin.top + ")")
                     .call(slopeyAxis);
 var xAxisGroup = svgContainer.append("g")
-                  .attr("transform", "translate(" + margin.left + "," + (height + margin. top - margin.bottom) + ")")
+                  .attr("transform", "translate(0"  + "," + (height + margin. top - margin.bottom) + ")")
                   .call(slopexAxis);
 
 var slopelines = [-0.05, 0.05, 0.1,0.15,0.2,0.25,0.3,0.35,0.4,
