@@ -35,10 +35,10 @@ div.tooltip {
 <!---->
 <div>
   <p style="font-size:24px"><font: sans-serif><b>Australian State COVID-19 trends</b> (<a href="https://timothystaples.github.io/oz_covid_trajectory/oz_covid_chart.html">Desktop version</a>)<br>
-  Caseloads to 28th March (inclusive)</p>
+  Caseloads to 29th March (inclusive)</p>
   <div class = "chart"></div></p>
-  <div style="width:1000px;"><p style="font-size:14px"><font: sans-serif><b>Left panel:</b> Y-axis scores are total confirmed cases by date, based on the first date each state recorded 10 confirmed cases. Hover over points to see an estimated trajectory for the next week, based on the average increase over the past week, as well as daily percentage increase and time for cases to double. These are NOT epidemiology models, they are simple projections based on past trends. Comparison countries are recorded in grey. Their x-axis scores are based on when they had similar cases to the maximum state observation (i.e. NSW). I judged this was the most appropriate comparison, given differences in testing protocols.</p>
-<p  style="font-size:14px"><b>Right panel:</b> Y-axis on this panel are the daily increases based on a running 7-day trend. These are equivalent to the slopes of the trajectories shown when hovering over left panel points, minus one. Positive percentages indicate cases are growing, with a zero indicating stable case numbers. Comparison trends are shown for other countries, however, their week-based trajectories are far less stable than Australian states due to changes in diagnosis and testing protocols.</p>
+  <div style="width:1000px;"><p style="font-size:14px"><font: sans-serif><b>Left panel:</b> Y-axis scores are total confirmed cases by date, based on the first date each state recorded 10 confirmed cases. Hover over points to see an estimated trajectory for the next week, based on the average increase over the past week, as well as daily percentage increase and time for cases to double. These are NOT epidemiology models, they are simple projections based on past trends.</p>
+<p  style="font-size:14px"><b>Right panel:</b> Y-axis on this panel are the daily increases based on a running 7-day trend. These are equivalent to the slopes of the trajectories shown when hovering over left panel points, minus one. Positive percentages indicate cases are growing, with a zero indicating stable case numbers.</p>
 </p><p  style="font-size:14px"><font: 12px sans-serif>Data sourced from <a href="https://github.com/CSSEGISandData/COVID-19">John Hopkins University CCSE</a>. Trajectory models are generated in R. All code is under an <a href="https://mit-license.org/">MIT License</a>. Code is poorly formatted and scarily inefficient - use at your own risk!</div>
 
 
@@ -66,12 +66,12 @@ var horizlines = [1,10,20,30,40,50,60,70,80,90,100,
 
 // Set up log y d3.axis()
 var yaxisScale = d3.scaleLog()
-                  .domain([6000,10])
+                  .domain([6500,10])
                   .range([margin.top, height - margin.bottom]);
 
 // X-axis scale is linear
 var xaxisScale = d3.scaleLinear()
-                  .domain([0,33])
+                  .domain([0,34])
                   .range([0, leftWidth - margin.left]);
 
 var xaxisoffset = function(d){return xaxisScale(d) + margin.left;};
@@ -138,157 +138,6 @@ var div = d3.select("body").append("div")
 var lineFunction = d3.line()
 .x(function(d) { return xaxisoffset(d.statetime);})
 .y(function(d) { return yaxisoffset(d.count); })
-
-var complineFunction = d3.line()
-.x(function(d) { return xaxisoffset(d.oztime);})
-.y(function(d) { return yaxisoffset(d.count); })
-
-// Plot comparison models first
-
-var compColor = "#ababab";
-var compData = d3.csv("comp_models.csv", function(data){
-  data.forEach(function(d){ d['oztime'] = +d['oztime']; });
-  data.forEach(function(d){ d['count'] = +d['count']; });
-  data.forEach(function(d){ d['int'] = +d['int']; });
-  data.forEach(function(d){ d['slope'] = +d['slope']; });
-
-var dataGroup = d3.nest()
-                    .key(function(d){return d["state"];})
-                    .entries(data);
-
-dataGroup.forEach(function(dataSub, i){
-
-stateName = dataSub.key;
-stateVals = dataSub.values;
-
-      svgContainer.append("path")
-          .attr("class", "casePath")
-          .attr("name", stateName + "casePath")
-          .attr("d", complineFunction(stateVals))
-          .attr("stroke-width", 2)
-          .attr("stroke", compColor)
-          .attr("fill", "none")
-          .style("opacity", 0.4);
-
-stateVals.forEach(function(pointSub, i){
-
-if(pointSub.oztime == d3.max(stateVals, function(d) { return d.oztimemax; })){
-
-  svgContainer.append("circle") // Uses the enter().append() method
-                    //.attr("class", "dot") // Assign a class for styling
-                    .attr("cx", xaxisoffset(pointSub.oztime))
-                    .attr("cy", yaxisoffset(pointSub.count))
-                    .attr("r",4)
-                    .attr("class", "compPoints")
-                    .attr("name", stateName + pointSub.oztime + "Point")
-                    .style("fill", compColor)
-                    .style("opacity", 1)
-                    .style("stroke", "transparent")
-                    .style("width",0);
-
-//Invisible point with larger radius to act as buffer for imprecise tapping
-//mobile devices
-                      svgContainer.append("circle") // Uses the enter().append() method
-                                        //.attr("class", "dot") // Assign a class for styling
-                                        .attr("cx", xaxisoffset(pointSub.oztime))
-                                        .attr("cy", yaxisoffset(pointSub.count))
-                                        .attr("r",mobileBuffer)
-                                        .attr("class", "compPoints")
-                                        .attr("name", stateName + "Point")
-                                        .style("fill", compColor)
-                                        .style("opacity", 0)
-                                        .style("stroke", "transparent")
-                                        .style("width",0)
-                                        .on("mouseover", function(d,i){
-
-                      //Increase point size
-                      d3.select("#" +  stateName + pointSub.oztime + "Point").transition()
-                      .duration("200")
-                      .attr("r",7)
-
-                      svgContainer.selectAll('circle.prospect').on("mouseover", function(d) {
-                          var circleUnderMouse = this;
-                          d3.selectAll('circle.prospect').transition()
-                      });
-
-                      //Make other points more opaque
-                      d3.selectAll(".casePoints")
-                          .transition()
-                          .duration("200")
-                          .style('opacity',0.2)
-                      d3.selectAll(".casePath:not(#" + stateName + "Path)").transition()
-                          .duration("200")
-                          .style("opacity", 0.2)
-                      d3.selectAll(".slopePath:not(#" + stateName + "slopePath)").transition()
-                          .duration("200")
-                          .style("opacity", 0.2)
-                      d3.selectAll(".caseText:not(#" + stateName + "Text)").transition()
-                          .duration("200")
-                          .style("opacity", 0.2)
-
-                      //Add trend line
-                      d3.select(".trend")
-                      .attr("x1", xaxisoffset(pointSub.oztime - 7))
-                      .attr("x2", xaxisoffset(pointSub.oztime + 7))
-                      .attr("y1", yaxisoffset(pointSub.min))
-                      .attr("y2", yaxisoffset(pointSub.max))
-                      .style("stroke", compColor)
-                      .transition()
-                      .duration("100")
-                      .style("opacity", 1);
-
-                      //Tooltip
-                      div.html(pointSub.state + ": " + pointSub.date + " : " + pointSub.count + " cases<br>" +
-                               "+" + " " + d3.format(".1%")(pointSub.incr) + " each day<br>" +
-                               "Doubling every " + d3.format(".2")(pointSub.double) + " days")
-                        .style("left", (d3.event.pageX) + 15 + "px")
-                        .style("top", (d3.event.pageY - 28) + "px")
-                        .style("color", "black")
-                        .style("background", compColor)
-                        div.transition().duration(400)
-                            .style("opacity", 0.8);
-
-                    })
-                    .on("mouseout", function(d,i){
-                      d3.select(this).transition()
-                      .duration("500")
-                      .attr("r",4)
-
-                      d3.selectAll(".casePoints:not(#" + stateName + "Point)").transition()
-                          .duration("200")
-                          .style("opacity", 1)
-                      d3.selectAll(".casePath:not(#" + stateName + "Path)").transition()
-                          .duration("200")
-                          .style("opacity", 0.8)
-                      d3.selectAll(".caseText:not(#" + stateName + "Text)").transition()
-                          .duration("200")
-                          .style("opacity", 1)
-
-                      div.transition()
-                         .duration(200)
-                          .style("opacity", 0);
-
-                      d3.select(".trend")
-                      .transition()
-                      .duration("200")
-                      .style("opacity", 0);
-                    });
-
-                }
-});
-
-var lineText = svgContainer.append("text")
-    .attr("x", xaxisoffset(d3.max(stateVals,
-                  function(d) { return d.oztime; }))+labeloffset.x)
-    .attr("y", yaxisoffset(d3.max(stateVals,
-                  function(d) { return d.count; })) + labeloffset.y)
-    .attr("name", stateName + "Text")
-    .text(stateName)
-    .style("fill", compColor);
-
-    });
-
-});
 
 var ozData = d3.csv("oz_model.csv", function(data){
   data.forEach(function(d){ d['statetime'] = +d['statetime']; });
@@ -502,104 +351,6 @@ svgContainer.append("text")
 var slopelineFunction = d3.line()
 .x(function(d) {return slopexaxisoffset(d.statetime);})
 .y(function(d) {return slopeyaxisoffset(d.incr); })
-
-var compslopelineFunction = d3.line()
-.x(function(d) {return slopexaxisoffset(d.oztime);})
-.y(function(d) {return slopeyaxisoffset(d.incr); })
-
-//Plot comp models first
-var ozData = d3.csv("comp_slope.csv", function(data){
-  data.forEach(function(d){ d['oztime'] = +d['oztime']; });
-  data.forEach(function(d){ d['count'] = +d['count']; });
-  data.forEach(function(d){ d['int'] = +d['int']; });
-  data.forEach(function(d){ d['slope'] = +d['slope']; });
-  data.forEach(function(d){ d['incr'] = +d['incr']; });
-
-var dataGroup = d3.nest()
-                    .key(function(d){return d["state"];})
-                    .entries(data);
-
-dataGroup.forEach(function(dataSub, i){
-
-stateName = dataSub.key;
-stateVals = dataSub.values;
-
-svgContainer.append("path")
-          .attr("d", compslopelineFunction(stateVals))
-          .attr("stroke", compColor)
-          .attr("class", "slopePath")
-          .attr("name", stateName + "slopePath")
-          .attr("stroke-width", 2)
-          .attr("fill", "none")
-          .style("opacity", 0.4);
-
-stateVals.forEach(function(pointSub, i){
-
-if(pointSub.oztime == d3.max(stateVals, function(d) { return d.oztimemax;})){
-      svgContainer.append("circle") // Uses the enter().append() method
-                    //.attr("class", "dot") // Assign a class for styling
-                    .attr("cx", slopexaxisoffset(pointSub.oztime))
-                    .attr("cy", slopeyaxisoffset(pointSub.incr))
-                    .attr("r", 4)
-                    .attr("name", stateName + pointSub.oztime + "compslope")
-                    .style("fill", compColor)
-                    .style("opacity", 1)
-                    .style("stroke", "transparent")
-                    .style("width",0);
-
-                    svgContainer.append("circle") // Uses the enter().append() method
-                                  //.attr("class", "dot") // Assign a class for styling
-                                  .attr("cx", slopexaxisoffset(pointSub.oztime))
-                                  .attr("cy", slopeyaxisoffset(pointSub.incr))
-                                  .attr("r", mobileBuffer)
-                                  .style("fill", compColor)
-                                  .style("opacity", 0)
-                                  .style("stroke", "transparent")
-                                  .style("width",0)
-                    .on("mouseover", function(d,i){
-
-                      //Increase point size
-                      d3.select("#" + stateName + pointSub.oztime + "compslope").transition()
-                      .duration("200")
-                      .attr("r",7)
-                                          //Tooltip
-                    div.html(pointSub.state + ": " + pointSub.date + " : " + pointSub.count + " cases<br>" +
-                             "+" + " " + d3.format(".1%")(pointSub.incr) + " each day<br>" +
-                             "Doubling every " + d3.format(".2")(pointSub.double) + " days")
-                      .style("left", (d3.event.pageX) + 15 + "px")
-                      .style("top", (d3.event.pageY - 28) + "px")
-                      .style("color", "black")
-                      .style("background", compColor)
-                      div.transition().duration(400)
-                          .style("opacity", 0.8)
-                          })
-                        .on("mouseout", function(d,i){
-                          d3.select(this).transition()
-                          .duration("500")
-                          .attr("r",4)
-
-                        div.transition()
-                           .duration(200)
-                            .style("opacity", 0)
-                          });
-
-
-if(pointSub.oztime == d3.max(stateVals,function(d) { return d.oztime;})){
-
-                    var lineText = svgContainer.append("text")
-                        .attr("x", slopexaxisoffset(pointSub.oztime + slopelabeloffset.x))
-                        .attr("y", slopeyaxisoffset(pointSub.incr + slopelabeloffset.y))
-                        .text(stateName)
-                        .style("fill", compColor);
-
-                }
-              }
-});
-
-    });
-
-});
-
 
 var ozData = d3.csv("oz_slope.csv", function(data){
   data.forEach(function(d){ d['statetime'] = +d['statetime']; });
