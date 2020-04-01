@@ -69,7 +69,7 @@ oz_long$count[oz_long$Province.State=="Victoria" &
               oz_long$date %in% c("19/03", "20/03", "22/03", "23/03")] = c(150, 178, 296, 355)
  
 oz_long$count[oz_long$Province.State=="New South Wales" &
-               oz_long$date %in% c("22/03")] = c(533)
+               oz_long$date %in% c("22/03", "31/03")] = c(533, 2182)
  
 oz_long$count[oz_long$Province.State=="Tasmania" &
                oz_long$date %in% c("24/03", "25/03", "27/03")] = c(36,42,58)
