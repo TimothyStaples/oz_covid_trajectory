@@ -18,7 +18,7 @@ svg text{fill:black;
 div.tooltip {
     position: absolute;
     text-align: left;
-    width: 175px;
+    width: 140px;
     height: 43px;
     padding: 4px;
     color: white;
@@ -222,8 +222,8 @@ if(pointSub.statetime >=7){
                       div.html(pointSub.state + ": " + pointSub.date + " : " + pointSub.count + " cases<br>" +
                                "+" + " " + d3.format(".1%")(pointSub.incr) + " each day<br>" +
                                "Doubling every " + d3.format(".2")(pointSub.double) + " days")
-                        .style("left", (d3.event.pageX) + 15 + "px")
-                        .style("top", (d3.event.pageY - 28) + "px")
+                        .style("left", (d3.event.pageX) - 150 + "px")
+                        .style("top", (d3.event.pageY - 60) + "px")
                         .style("background", stateCols[pointSub.state])
                         .style("color", "white")
                         div.transition().duration(400)
