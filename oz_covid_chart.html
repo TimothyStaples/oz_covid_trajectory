@@ -35,7 +35,7 @@ div.tooltip {
 <!---->
 <div>
   <p style="font-size:24px"><font: sans-serif><b>Australian State COVID-19 trends</b> (<a href="https://timothystaples.github.io/oz_covid_trajectory/oz_covid_chart_m.html">Mobile version</a>)<br>
-  Caseloads to 7th April (inclusive)</p>
+  Caseloads to 13th April (inclusive)</p>
   <div class = "chart"></div></p>
   <div style="width:1000px;"><p style="font-size:14px"><font: sans-serif><b>Left panel:</b> Y-axis scores are total confirmed cases by date, based on the first date each state recorded 10 confirmed cases. Hover over points to see an estimated trajectory for the next week, based on the average increase over the past week, as well as daily percentage increase and time for cases to double. These are NOT epidemiology models, they are simple projections based on past trends.</p>
 <p  style="font-size:14px"><b>Right panel:</b> Y-axis on this panel are the daily increases based on a running 7-day trend. These are equivalent to the slopes of the trajectories shown when hovering over left panel points, minus one. Positive percentages indicate cases are growing, with a zero indicating stable case numbers.</p>
@@ -70,7 +70,7 @@ var yaxisScale = d3.scaleLog()
 
 // X-axis scale is linear
 var xaxisScale = d3.scaleLinear()
-                  .domain([0,44])
+                  .domain([0,49])
                   .range([0, leftWidth - margin.left]);
 
 var xaxisoffset = function(d){return xaxisScale(d) + margin.left;};
@@ -287,12 +287,12 @@ svgContainer.append("rect")
 
 // Set up log y d3.axis()
 var slopeyaxisScale = d3.scaleLinear()
-                  .domain([0.45,0])
+                  .domain([0.45,-0.05])
                   .range([margin.top, height - margin.bottom]);
 
 // X-axis scale is linear
 var slopexaxisScale = d3.scaleLinear()
-                  .domain([6,38])
+                  .domain([6,46])
                   .range([leftWidth + margin.right, leftWidth+rightWidth+margin.right]);
 
 var slopexaxisoffset = function(d){return slopexaxisScale(d);};
