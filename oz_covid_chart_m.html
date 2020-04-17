@@ -35,7 +35,7 @@ div.tooltip {
 <!---->
 <div>
   <p style="font-size:24px"><font: sans-serif><b>Australian State COVID-19 trends</b> (<a href="https://timothystaples.github.io/oz_covid_trajectory/oz_covid_chart.html">Desktop version</a>)<br>
-  Caseloads to 13th April (inclusive)</p>
+  Caseloads to 16th April (inclusive)</p>
   <div class = "chart"></div></p>
   <div style="width:1000px;"><p style="font-size:14px"><font: sans-serif><b>Left panel:</b> Y-axis scores are total confirmed cases by date, based on the first date each state recorded 10 confirmed cases. Hover over points to see an estimated trajectory for the next week, based on the average increase over the past week, as well as daily percentage increase and time for cases to double. These are NOT epidemiology models, they are simple projections based on past trends.</p>
 <p  style="font-size:14px"><b>Right panel:</b> Y-axis on this panel are the daily increases based on a running 7-day trend. These are equivalent to the slopes of the trajectories shown when hovering over left panel points, minus one. Positive percentages indicate cases are growing, with a zero indicating stable case numbers.</p>
@@ -71,7 +71,7 @@ var yaxisScale = d3.scaleLog()
 
 // X-axis scale is linear
 var xaxisScale = d3.scaleLinear()
-                  .domain([0,49])
+                  .domain([0,52])
                   .range([0, leftWidth - margin.left]);
 
 var xaxisoffset = function(d){return xaxisScale(d) + margin.left;};
@@ -224,7 +224,7 @@ if(pointSub.statetime >=7){
                       //Tooltip
                       div.html(pointSub.state + ": " + pointSub.date + " : " + pointSub.count + " cases<br>" +
                                "+" + " " + d3.format(".1%")(pointSub.incr) + " each day<br>" +
-                               "Doubling every " + d3.format(".2")(pointSub.double) + " days")
+                               "Doubling every " + d3.format(".3")(pointSub.double) + " days")
                         .style("left", (d3.event.pageX) - 150 + "px")
                         .style("top", (d3.event.pageY - 60) + "px")
                         .style("background", stateCols[pointSub.state])
@@ -293,7 +293,7 @@ var slopeyaxisScale = d3.scaleLinear()
 
 // X-axis scale is linear
 var slopexaxisScale = d3.scaleLinear()
-                  .domain([6,46])
+                  .domain([6,48])
                   .range([leftWidth + margin.right, leftWidth+rightWidth+margin.right]);
 
 var slopexaxisoffset = function(d){return slopexaxisScale(d);};
@@ -409,7 +409,7 @@ if(pointSub.statetime >=7){
                     //Tooltip
                       div.html(pointSub.state + ": " + pointSub.date + " : " + pointSub.count + " cases<br>" +
                                "+" + " " + d3.format(".1%")(pointSub.incr) + " each day<br>" +
-                               "Doubling every " + d3.format(".2")(pointSub.double) + " days")
+                               "Doubling every " + d3.format(".3")(pointSub.double) + " days")
                         .style("left", (d3.event.pageX) + 15 + "px")
                         .style("top", (d3.event.pageY - 28) + "px")
                         .style("background", stateCols[pointSub.state])

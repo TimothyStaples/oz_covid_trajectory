@@ -120,7 +120,7 @@ print(x$Province.State[1])
   x$min = exp(x$int + x$slope*(x$statetime-7))
   x$max = exp(x$int + x$slope*(x$statetime+7))
   x$incr = exp(x$slope)-1
-  x$double = ifelse(x$slope != 0, log(2) / x$slope, 0)
+  x$double = ifelse(x$slope >= 0, log(2) / x$slope, "---")
     return(x)
 }))
 
