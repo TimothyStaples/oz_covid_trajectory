@@ -16,6 +16,7 @@ oz_cov <- covid[covid$Country.Region=="Australia" &
 
 # Comparison countries
 covid$Country.Region[covid$Province.State=="Hong Kong"] = "Hong Kong"
+#comp_cov <- covid
 comp_cov <- covid[covid$Country.Region %in% c("Singapore", "Hong Kong", "United Kingdom",
                                               "Italy", "US", "Korea, South"),]
 
