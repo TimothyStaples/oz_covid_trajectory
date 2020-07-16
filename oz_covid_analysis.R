@@ -121,7 +121,9 @@ print(x$Province.State[1])
   x$min = exp(x$int + x$slope*(x$statetime-7))
   x$max = exp(x$int + x$slope*(x$statetime+7))
   x$incr = exp(x$slope)-1
-  x$double = ifelse(x$slope >= 0, log(2) / x$slope, "---")
+  x$double = ifelse(x$slope > 0, log(2) / x$slope, 0)
+  x$double <- ifelse(x$double < 1000, paste0("Doubling every ", sprintf("%.1f", x$double), " days"), "")
+  
     return(x)
 }))
 
@@ -157,8 +159,7 @@ comp.model <- do.call("rbind", lapply(split(comp.model, f= comp.model$ProvinceSt
                       }))
 
 write.table(oz.model, "./oz_model.csv", row.names=FALSE, sep=",")
+write.table(oz.model[unique(c(which(oz.model$statetime %% 5 == 0), 
+                              which(oz.model$date == oz.model$date[nrow(oz.model)]))),],
+            "./oz_model_point.csv", row.names=FALSE, sep=",")
 write.table(oz.model[oz.model$statetime >5,], "./oz_slope.csv", row.names=FALSE, sep=",")
-write.table(comp.model[comp.model$oztime>=0 &
-                      comp.model$oztime <= comp.model$oztimemax,], "./comp_models.csv", row.names=FALSE, sep=",")
-write.table(comp.model[comp.model$oztime>= min(oz.model$statetime[oz.model$incr>0]) &
-                       comp.model$oztime <= comp.model$oztimemax,], "./comp_slope.csv", row.names=FALSE, sep=",")

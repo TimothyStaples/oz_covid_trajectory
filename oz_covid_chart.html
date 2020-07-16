@@ -18,7 +18,7 @@ svg text{fill:black;
 div.tooltip {
     position: absolute;
     text-align: left;
-    width: 140px;
+    width: 145px;
     height: 43px;
     padding: 4px;
     color: white;
@@ -35,18 +35,16 @@ div.tooltip {
 <!---->
 <div>
   <p style="font-size:24px"><font: sans-serif><b>Australian State COVID-19 trends</b> (<a href="https://timothystaples.github.io/oz_covid_trajectory/oz_covid_chart_m.html">Mobile version</a>)<br>
-  Caseloads to 19th April (inclusive)</p>
+  Caseloads to 15th July (inclusive)</p>
   <div class = "chart"></div></p>
-  <div style="width:1000px;"><p style="font-size:14px"><font: sans-serif><b>Left panel:</b> Y-axis scores are total confirmed cases by date, based on the first date each state recorded 10 confirmed cases. Hover over points to see an estimated trajectory for the next week, based on the average increase over the past week, as well as daily percentage increase and time for cases to double. These are NOT epidemiology models, they are simple projections based on past trends.</p>
-<p  style="font-size:14px"><b>Right panel:</b> Y-axis on this panel are the daily increases based on a running 7-day trend. These are equivalent to the slopes of the trajectories shown when hovering over left panel points, minus one. Positive percentages indicate cases are growing, with a zero indicating stable case numbers.</p>
+  <div style="width:1000px;"><p style="font-size:14px"><font: sans-serif>Y-axis scores are total confirmed cases by date, based on the first date each state recorded 10 confirmed cases. Hover over points to see an estimated trajectory for the next week, based on the average increase over the past week, as well as daily percentage increase and time for cases to double. These are NOT epidemiology models, they are simple projections based on past trends.</p>
 </p><p  style="font-size:14px"><font: 12px sans-serif>Data sourced from <a href="https://github.com/CSSEGISandData/COVID-19">John Hopkins University CCSE</a>. Trajectory models are generated in R. All code is under an <a href="https://mit-license.org/">MIT License</a>. Code is poorly formatted and scarily inefficient - use at your own risk!</div>
 
 
 <script>
 
 var width = 900;
-var leftWidth = 500;
-var rightWidth = 450;
+var leftWidth = 900;
 var height = 500;
 var margin = {bottom:50, left: 50, top:5, right:60};
 var yticks = [1,10,100,1000,10000];
@@ -61,16 +59,16 @@ var labeloffset = {x: width*0.01, y: height*0.01};
 var horizlines = [1,10,20,30,40,50,60,70,80,90,100,
                   200,300,400,500,600,700,800,900,1000,
                   1100,1200,1300,1400,1500,1600,1700,1800,1900,
-                  2000,3000,4000,5000];
+                  2000,3000,4000,5000,6000,7000,8000,9000,10000];
 
 // Set up log y d3.axis()
 var yaxisScale = d3.scaleLog()
-                  .domain([5000,10])
+                  .domain([10000,10])
                   .range([margin.top, height - margin.bottom]);
 
 // X-axis scale is linear
 var xaxisScale = d3.scaleLinear()
-                  .domain([0,55])
+                  .domain([0,150])
                   .range([0, leftWidth - margin.left]);
 
 var xaxisoffset = function(d){return xaxisScale(d) + margin.left;};
@@ -134,7 +132,7 @@ svgContainer.append("line")
             .attr("y1", -50)
             .attr("y2", -60)
             .style("stroke", "black")
-            .style("stroke-width", 2)
+            .style("stroke-width", 3)
             .style("stroke-dasharray", ("3,3"));
 
 //Tooltip div
@@ -142,7 +140,7 @@ var div = d3.select("body").append("div")
     .attr("class", "tooltip")
     .style("opacity", 0);
 
-// PLOT DATA
+// PLOT DATA - LINES
 var lineFunction = d3.line()
 .x(function(d) { return xaxisoffset(d.statetime);})
 .y(function(d) { return yaxisoffset(d.count); })
@@ -171,9 +169,25 @@ stateVals = dataSub.values;
           .attr("fill", "none")
           .style("opacity", 0.8);
 
+})});
+
+var ozData = d3.csv("oz_model_point.csv", function(data){
+            data.forEach(function(d){ d['statetime'] = +d['statetime']; });
+            data.forEach(function(d){ d['count'] = +d['count']; });
+            data.forEach(function(d){ d['int'] = +d['int']; });
+            data.forEach(function(d){ d['slope'] = +d['slope']; });
+
+          var dataGroup = d3.nest()
+                              .key(function(d){return d["state"];})
+                              .entries(data);
+
+          dataGroup.forEach(function(dataSub, i){
+
+          stateName = dataSub.key;
+          stateVals = dataSub.values;
+
 stateVals.forEach(function(pointSub, i){
 
-if(pointSub.statetime >=7){
       svgContainer.append("circle") // Uses the enter().append() method
                     //.attr("class", "dot") // Assign a class for styling
                     .attr("cx", xaxisoffset(pointSub.statetime))
@@ -221,7 +235,7 @@ if(pointSub.statetime >=7){
                       //Tooltip
                       div.html(pointSub.state + ": " + pointSub.date + " : " + pointSub.count + " cases<br>" +
                                "+" + " " + d3.format(".1%")(pointSub.incr) + " each day<br>" +
-                               "Doubling every " + d3.format(".3")(pointSub.double) + " days")
+                               pointSub.double)
                         .style("left", (d3.event.pageX) - 150 + "px")
                         .style("top", (d3.event.pageY - 60) + "px")
                         .style("background", stateCols[pointSub.state])
@@ -255,7 +269,7 @@ if(pointSub.statetime >=7){
                       .style("opacity", 0);
                     });
 
-                }
+
 });
 
 var lineText = svgContainer.append("text")
@@ -292,7 +306,7 @@ var slopeyaxisScale = d3.scaleLinear()
 
 // X-axis scale is linear
 var slopexaxisScale = d3.scaleLinear()
-                  .domain([6,53])
+                  .domain([6,51])
                   .range([leftWidth + margin.right, leftWidth+rightWidth+margin.right]);
 
 var slopexaxisoffset = function(d){return slopexaxisScale(d);};
