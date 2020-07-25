@@ -68,7 +68,7 @@ var yaxisScale = d3.scaleLog()
 
 // X-axis scale is linear
 var xaxisScale = d3.scaleLinear()
-                  .domain([0,150])
+                  .domain([0,160])
                   .range([0, leftWidth - margin.left]);
 
 var xaxisoffset = function(d){return xaxisScale(d) + margin.left;};
