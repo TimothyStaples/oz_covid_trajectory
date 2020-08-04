@@ -18,7 +18,7 @@ svg text{fill:black;
 div.tooltip {
     position: absolute;
     text-align: left;
-    width: 145px;
+    width: 150px;
     height: 43px;
     padding: 4px;
     color: white;
@@ -46,7 +46,7 @@ var width = 900;
 var leftWidth = 900;
 var height = 500;
 var margin = {bottom:50, left: 50, top:5, right:60};
-var yticks = [1,10,100,1000,10000];
+var yticks = [1,10,100,1000,10000, 15000, 20000];
 
 var stateCols = {ACT: "#4d43c6", NSW: "#cb2030", NZ: "#708b84",
                  NT: "#5b0016", QLD: "#550f6f",
@@ -59,11 +59,12 @@ var horizlines = [1,10,20,30,40,50,60,70,80,90,100,
                   200,300,400,500,600,700,800,900,1000,
                   1100,1200,1300,1400,1500,1600,1700,1800,1900,
                   2000,3000,4000,5000,6000,7000,8000,9000,10000,
-                11000, 12000, 13000, 14000, 15000, 16000];
+                11000, 12000, 13000, 14000, 15000, 16000,
+              17000, 18000, 19000,20000];
 
 // Set up log y d3.axis()
 var yaxisScale = d3.scaleLog()
-                  .domain([16000,10])
+                  .domain([20000,10])
                   .range([margin.top, height - margin.bottom]);
 
 // X-axis scale is linear
